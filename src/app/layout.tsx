@@ -1,6 +1,5 @@
 import type {Metadata} from "next";
 import "./globals.css";
-import Navbar from "@/app/components/navbar";
 import {AppRouterCacheProvider} from "@mui/material-nextjs/v13-appRouter";
 import {ThemeProvider} from "@mui/material/styles";
 import React from "react";

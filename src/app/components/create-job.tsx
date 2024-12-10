@@ -17,9 +17,10 @@ const style = {
 type CreateJobModalProps = {
     open: boolean;
     handleClose: () => void;
+    onJobCreated: () => void;
 };
 
-export default function CreateJobModal({open, handleClose}: CreateJobModalProps) {
+export default function CreateJobModal({open, handleClose, onJobCreated}: CreateJobModalProps) {
     const [jobName, setJobName] = useState("");
     const [error, setError] = useState<string | null>(null);
     const [snackbar, setSnackbar] = useState<{ open: boolean; message: string; severity: "success" | "error" }>({
@@ -35,12 +36,11 @@ export default function CreateJobModal({open, handleClose}: CreateJobModalProps)
         }
     };
 
-    const fetchApi = async () => {
+    const createJob = async () => {
         if (jobName.length < 3) {
             setError("Job name must be at least 3 characters");
             return;
         }
-
 
         const response: Response = await fetch("/api/job", {
             method: "POST",
@@ -48,12 +48,13 @@ export default function CreateJobModal({open, handleClose}: CreateJobModalProps)
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({jobName}),
-        });
+        })
 
         if (response.ok) {
             setSnackbar({open: true, message: "Job created successfully", severity: "success"});
             handleClose();
             setJobName("");
+            onJobCreated();
         } else {
             const errorData = await response.json();
             setSnackbar({open: true, message: `Error: ${errorData.message || "Unknown error"}`, severity: "error"});
@@ -62,7 +63,7 @@ export default function CreateJobModal({open, handleClose}: CreateJobModalProps)
 
     const handleKeyDown = async (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === "Enter") {
-            await fetchApi();
+            await createJob();
         }
     };
 
@@ -91,7 +92,7 @@ export default function CreateJobModal({open, handleClose}: CreateJobModalProps)
                             helperText={error}
                             onKeyDown={handleKeyDown}
                         />
-                        <Button variant="contained" onClick={fetchApi} fullWidth>
+                        <Button variant="contained" onClick={createJob} fullWidth>
                             Create
                         </Button>
                     </Stack>

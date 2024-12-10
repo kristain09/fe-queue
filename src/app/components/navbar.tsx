@@ -3,8 +3,10 @@ import React, {useState} from "react";
 import {Box, Button} from "@mui/material";
 import {Stack} from "@mui/system";
 import CreateJobModal from "@/app/components/create-job";
-
-export default function Navbar() {
+type NavBarModal = {
+    jobCreatedCallBack : () => void;
+};
+export default function Navbar({jobCreatedCallBack}: NavBarModal) {
     const [open, setOpen] = useState(false);
 
     const handleOpen = () => setOpen(true);
@@ -34,7 +36,7 @@ export default function Navbar() {
                     </Button>
                 </Stack>
             </Box>
-            <CreateJobModal open={open} handleClose={handleClose}/>
+            <CreateJobModal open={open} handleClose={handleClose} onJobCreated={jobCreatedCallBack} />
         </>
     );
 }
